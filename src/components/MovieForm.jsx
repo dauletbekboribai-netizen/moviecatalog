@@ -2,6 +2,30 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
 
+const showToast = (message, type = "success") => {
+  const toast = document.createElement("div");
+
+  toast.innerText = message;
+
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.left = "20px";
+  toast.style.padding = "12px 16px";
+  toast.style.borderRadius = "8px";
+  toast.style.color = "#fff";
+  toast.style.zIndex = "9999";
+  toast.style.fontWeight = "500";
+  toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+  toast.style.background =
+    type === "error" ? "#dc2626" : "#16a34a";
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+};
+
 export default function MovieForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,7 +46,9 @@ export default function MovieForm() {
     
     const token = getToken();
     if (!token) {
-      setError("Please login first");
+      const message = "Please login first";
+       setError(message);
+       showToast(message, "error");
       return;
     }
 
@@ -39,8 +65,9 @@ export default function MovieForm() {
       }, 
       body: JSON.stringify(dataToSend) 
     });
-    
+    showToast(id ? "Movie updated successfully" : "Movie added successfully");
     if (res.ok) navigate('/');
+    
     else {
       const data = await res.json();
       setError(data.error || "Error saving movie");

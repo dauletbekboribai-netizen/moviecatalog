@@ -3,6 +3,30 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/store';
 
+const showToast = (message, type = "success") => {
+  const toast = document.createElement("div");
+
+  toast.innerText = message;
+
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.left = "20px";
+  toast.style.padding = "12px 16px";
+  toast.style.borderRadius = "8px";
+  toast.style.color = "#fff";
+  toast.style.zIndex = "9999";
+  toast.style.fontWeight = "500";
+  toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+  toast.style.background =
+    type === "error" ? "#dc2626" : "#16a34a";
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+};
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,11 +47,16 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch(setUser(data.user));
         navigate("/");
+        showToast("Login successful");
       } else {
-        setError("Invalid credentials");
+        const message = "Invalid credentials";
+          setError(message);
+          showToast(message, "error");
       }
     } catch {
-      setError("Connection error");
+      const message = "Connection error";
+         setError(message);
+         showToast(message, "error");
     }
   };
 

@@ -27,6 +27,55 @@
       "password": "$2b$10$rwJhPqkl9mVqEm49IEtEIeQhZxadd17hMmjOJ2978Cr3xy1SM3y5a",
       "name": "Daulet",
       "role": "user"
+    },
+    {
+      "id": 1776965632908,
+      "email": "dauletbekboribai@gmail.com",
+      "password": "$2b$10$55T4p89YIiDzwjA1vcXkDOP1N/Co0RwLPK/XHZYHvdTfYfb8sVRga",
+      "name": "Dauka",
+      "role": "user"
+    },
+    {
+      "id": 1776972187861,
+      "email": "qwerty@gmail.com",
+      "password": "$2b$10$6Nm6zq0FuWyigjRVvb2lK.2QB4Q/WOillp/eZOvB.RQmLDZu7RncW",
+      "name": "example",
+      "role": "user"
+    },
+    {
+      "id": 1776972446841,
+      "email": "qwerty@gmail.ru",
+      "password": "$2b$10$9p2JU8YiDuf8NVl7tZf.BuXg8AQZOKkd.IPi4d1xL5NQL3eGBUdqi",
+      "name": "example2",
+      "role": "user"
+    },
+    {
+      "id": 1776974454953,
+      "email": "fdfaf",
+      "password": "$2b$10$EBSE.xIkf8A4XzkKR1dgVuYN2NbEmyk7Y4gQRJ1SjzNtowJhc.Hdi",
+      "name": "sdqwfs",
+      "role": "user"
+    },
+    {
+      "id": 1776974589806,
+      "email": "цуцек",
+      "password": "$2b$10$8YxvY1LkZtMpJVjFbSXWt.MH6UXVnSdJXv3U6hBBKWkVCkzWMj9hC",
+      "name": "цека",
+      "role": "user"
+    },
+    {
+      "id": 1776974773522,
+      "email": "уацав",
+      "password": "$2b$10$/etUWqUlU6XatTwR3Jn09.aaR66xxQO0qKM40DOi0hnZ9p8znAaCi",
+      "name": "уацауц",
+      "role": "user"
+    },
+    {
+      "id": 1776975830249,
+      "email": "йцафыв",
+      "password": "$2b$10$/RoZWJ4nGD3O9C95lf1aI.I4kYz4FAwCu2Si0pTfBtlrvlZvKXbM2",
+      "name": "йуав",
+      "role": "user"
     }
   ],
   "genres": [
@@ -175,6 +224,15 @@
       "rating": 10,
       "createdAt": "2026-04-23T16:53:45.268Z",
       "id": 5
+    },
+    {
+      "movieId": 6,
+      "userId": 1776965632908,
+      "userName": "Dauka",
+      "comment": "супер",
+      "rating": 5,
+      "createdAt": "2026-04-24T04:34:54.948Z",
+      "id": 7
     }
   ]
 }
