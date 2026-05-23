@@ -1,6 +1,13 @@
 {
   "users": [
     {
+      "id": 1,
+      "email": "admin@test.com",
+      "password": "$2b$10$AWTlGWUfcH8h4VqXswnitesdxH1ccSL8spMwU7BKL8NIigCbksT3e",
+      "name": "Admin",
+      "role": "admin"
+    },
+    {
       "id": 1775733627517,
       "email": "yernur111@gmail.com",
       "password": "$2b$10$.vMX/NeNF7s3MA0spTEEQeJLAO4RrZ.naNcTykUSms/fgplwT5gmq",
@@ -8,73 +15,10 @@
       "role": "user"
     },
     {
-      "id": 1775795514604,
-      "email": "admin@test.com",
-      "password": "$2b$10$AWTlGWUfcH8h4VqXswnitesdxH1ccSL8spMwU7BKL8NIigCbksT3e",
-      "name": "Admin Yernur",
-      "role": "admin"
-    },
-    {
-      "id": 1775799166163,
-      "email": "azaa@gmail.com",
-      "password": "$2b$10$xmoPWqDXELD1NAVHi62fne80W.f5cBgwok93BSn3C77mFpZ0u2gv.",
-      "name": "azaa",
-      "role": "user"
-    },
-    {
-      "id": 1776955936091,
-      "email": "daulet111@gmail.com",
-      "password": "$2b$10$rwJhPqkl9mVqEm49IEtEIeQhZxadd17hMmjOJ2978Cr3xy1SM3y5a",
-      "name": "Daulet",
-      "role": "user"
-    },
-    {
-      "id": 1776965632908,
-      "email": "dauletbekboribai@gmail.com",
-      "password": "$2b$10$55T4p89YIiDzwjA1vcXkDOP1N/Co0RwLPK/XHZYHvdTfYfb8sVRga",
-      "name": "Dauka",
-      "role": "user"
-    },
-    {
-      "id": 1776972187861,
-      "email": "qwerty@gmail.com",
-      "password": "$2b$10$6Nm6zq0FuWyigjRVvb2lK.2QB4Q/WOillp/eZOvB.RQmLDZu7RncW",
-      "name": "example",
-      "role": "user"
-    },
-    {
-      "id": 1776972446841,
-      "email": "qwerty@gmail.ru",
-      "password": "$2b$10$9p2JU8YiDuf8NVl7tZf.BuXg8AQZOKkd.IPi4d1xL5NQL3eGBUdqi",
-      "name": "example2",
-      "role": "user"
-    },
-    {
-      "id": 1776974454953,
-      "email": "fdfaf",
-      "password": "$2b$10$EBSE.xIkf8A4XzkKR1dgVuYN2NbEmyk7Y4gQRJ1SjzNtowJhc.Hdi",
-      "name": "sdqwfs",
-      "role": "user"
-    },
-    {
-      "id": 1776974589806,
-      "email": "цуцек",
-      "password": "$2b$10$8YxvY1LkZtMpJVjFbSXWt.MH6UXVnSdJXv3U6hBBKWkVCkzWMj9hC",
-      "name": "цека",
-      "role": "user"
-    },
-    {
-      "id": 1776974773522,
-      "email": "уацав",
-      "password": "$2b$10$/etUWqUlU6XatTwR3Jn09.aaR66xxQO0qKM40DOi0hnZ9p8znAaCi",
-      "name": "уацауц",
-      "role": "user"
-    },
-    {
-      "id": 1776975830249,
-      "email": "йцафыв",
-      "password": "$2b$10$/RoZWJ4nGD3O9C95lf1aI.I4kYz4FAwCu2Si0pTfBtlrvlZvKXbM2",
-      "name": "йуав",
+      "id": 1778652545884,
+      "email": "daulet@gmail.com",
+      "password": "$2b$10$Rvb3ZsL/JGeJX7RIY8hTD.Xz5XaD7P.yL1GYVebmHQXRlwl/XzlCW",
+      "name": "daulet",
       "role": "user"
     }
   ],
@@ -105,134 +49,251 @@
       "id": 1,
       "title": "Inception",
       "year": 2010,
-      "rating": 8.8,
       "posterUrl": "https://i.ebayimg.com/images/g/qeAAAOSwlMNnO6gM/s-l1600.webp",
       "description": "A thief who steals corporate secrets through dream-sharing technology.",
       "genreId": 5,
       "createdBy": 1775733627517
     },
     {
-      "title": "Fury",
-      "year": 2014,
-      "rating": 9,
-      "posterUrl": "https://i.etsystatic.com/12729518/r/il/f58742/1992785418/il_fullxfull.1992785418_4tlw.jpg",
-      "description": "",
-      "genreId": 1,
-      "id": 3,
-      "createdBy": 1775733627517
-    },
-    {
-      "title": "Avengers: Infinity war",
-      "year": 2018,
-      "rating": 8,
-      "posterUrl": "https://m.media-amazon.com/images/I/A1kio+K2RuL._AC_UF894,1000_QL80_.jpg",
-      "description": "",
-      "genreId": 1,
-      "id": 4,
-      "createdBy": 1775733627517
-    },
-    {
-      "title": "Frankenstein",
-      "year": 2025,
-      "rating": 7,
-      "posterUrl": "https://posterspy.com/wp-content/uploads/2025/11/frankenstein.jpg",
-      "description": "",
-      "genreId": 5,
-      "id": 5,
-      "createdBy": 1775733627517
-    },
-    {
-      "title": "1+1",
-      "year": 2018,
-      "rating": 10,
-      "posterUrl": "https://static.tildacdn.com/tild6361-3861-4237-b835-373964636233/1_1-1.jpg",
-      "description": "asd asdasda",
-      "genreId": 2,
-      "id": 6,
-      "createdBy": 1775733627517
-    },
-    {
-      "title": "Conjuring ",
-      "year": 2013,
-      "posterUrl": "https://m.media-amazon.com/images/M/MV5BMTM3NjA1NDMyMV5BMl5BanBnXkFtZTcwMDQzNDMzOQ@@._V1_.jpg",
-      "description": "The Conjuring (2013) is based on the 1971 haunting of the Perron family in Harrisville, Rhode Island, investigated by paranormal researchers Ed and Lorraine Warren. While inspired by true events, including reports of spirits and a seance, the film is largely fictionalized—roughly 95% fiction and 5% truth—according to daughter Andrea Perron. ",
-      "genreId": 4,
-      "id": 7,
-      "createdBy": 1775733627517
-    },
-    {
+      "id": 2,
       "title": "Gladiator",
       "year": 2001,
       "posterUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTzd7yRUyPmphOawjkKiPFvNK9hkXoA7wG0g&s",
-      "description": "Gladiator (2000) is an epic historical drama directed by Ridley Scott, starring Russell Crowe as Maximus Decimus Meridius, a betrayed Roman general who becomes a gladiator to avenge his family and the murdered emperor. Set in 180 AD, the film follows his rise through the arena ranks to challenge the corrupt emperor Commodus (Joaquin Phoenix).",
+      "description": "A betrayed Roman general becomes a gladiator to avenge his family.",
       "genreId": 3,
-      "id": 8,
       "createdBy": 1775733627517
+    },
+    {
+      "title": "Avengers: Infinity War",
+      "year": 2018,
+      "posterUrl": "https://i.ebayimg.com/images/g/dowAAOSwtPNlfalz/s-l1600.webp",
+      "description": "",
+      "genreId": 1,
+      "createdBy": 1775733627517,
+      "id": 3
     },
     {
       "title": "Avengers: Endgame",
       "year": 2019,
-      "posterUrl": "https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_FMjpg_UX1000_.jpg",
+      "posterUrl": "https://i.ebayimg.com/images/g/VGwAAOSwey5cinT2/s-l1600.webp",
       "description": "",
       "genreId": 1,
       "createdBy": 1775733627517,
-      "id": 9
-    }
-  ],
-  "reviews": [
-    {
-      "movieId": 1,
-      "userId": 1775733627517,
-      "userName": "Yernur",
-      "comment": "крут",
-      "rating": 10,
-      "createdAt": "2026-04-23T15:11:25.043Z",
-      "id": 1
-    },
-    {
-      "movieId": 1,
-      "userId": 1775799166163,
-      "userName": "azaa",
-      "comment": "k",
-      "rating": 5,
-      "createdAt": "2026-04-23T16:22:39.455Z",
-      "id": 2
-    },
-    {
-      "movieId": 8,
-      "userId": 1775733627517,
-      "userName": "Yernur",
-      "comment": "When that song played it hurted me twicely",
-      "rating": 10,
-      "createdAt": "2026-04-23T16:26:51.216Z",
-      "id": 3
-    },
-    {
-      "movieId": 8,
-      "userId": 1775733627517,
-      "userName": "Yernur",
-      "comment": "Ill always come back rewatch this movie",
-      "rating": 10,
-      "createdAt": "2026-04-23T16:27:40.461Z",
       "id": 4
     },
     {
-      "movieId": 9,
-      "userId": 1775733627517,
-      "userName": "Yernur",
-      "comment": "Fire",
-      "rating": 10,
-      "createdAt": "2026-04-23T16:53:45.268Z",
+      "title": "1 + 1",
+      "year": 2011,
+      "posterUrl": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/4c78b2e3-ffed-4985-bbc2-642952c92f5e/576x",
+      "description": "",
+      "genreId": 2,
+      "createdBy": 1775733627517,
       "id": 5
     },
     {
-      "movieId": 6,
-      "userId": 1776965632908,
-      "userName": "Dauka",
-      "comment": "супер",
-      "rating": 5,
-      "createdAt": "2026-04-24T04:34:54.948Z",
+      "title": "Insidious",
+      "year": 2010,
+      "posterUrl": "https://avatars.mds.yandex.net/get-kinopoisk-image/1946459/d9a90a7a-84c6-42b6-8b64-1a4f6727e0f7/orig",
+      "description": "",
+      "genreId": 4,
+      "createdBy": 1775733627517,
+      "id": 6
+    },
+    {
+      "title": "Conjuring",
+      "year": 2013,
+      "posterUrl": "https://i.etsystatic.com/40271594/r/il/17631f/6035361082/il_570xN.6035361082_mrbc.jpg",
+      "description": "",
+      "genreId": 4,
+      "createdBy": 1775733627517,
       "id": 7
+    },
+    {
+      "title": "Spider Man: No way home",
+      "year": 2021,
+      "posterUrl": "https://i.ebayimg.com/images/g/-ZIAAOSw~c1le0Sf/s-l1600.webp",
+      "description": "",
+      "genreId": 1,
+      "createdBy": 1775733627517,
+      "id": 8
+    },
+    {
+      "title": "Interstellar",
+      "year": 2014,
+      "posterUrl": "https://i.ebayimg.com/images/g/fNoAAOSw~O5l3nzM/s-l1600.webp",
+      "description": "",
+      "genreId": 5,
+      "createdBy": 1775733627517,
+      "id": 9
+    },
+    {
+      "title": "1917",
+      "year": 2019,
+      "posterUrl": "https://kinogo.ec/uploads/posts/2020-08/1733163546-1917.webp",
+      "description": "",
+      "genreId": 3,
+      "createdBy": 1775733627517,
+      "id": 10
+    }
+  ],
+  "reviews": [],
+  "actors": [
+    {
+      "id": 1,
+      "name": "Leonardo DiCaprio",
+      "birthYear": 1974
+    },
+    {
+      "id": 2,
+      "name": "Joseph Gordon-Levitt",
+      "birthYear": 1981
+    },
+    {
+      "id": 3,
+      "name": "Tom Hardy",
+      "birthYear": 1977
+    },
+    {
+      "id": 4,
+      "name": "Russell Crowe",
+      "birthYear": 1964
+    },
+    {
+      "id": 5,
+      "name": "Joaquin Phoenix",
+      "birthYear": 1974
+    },
+    {
+      "name": "Russel Crowe",
+      "birthYear": null,
+      "id": 6
+    },
+    {
+      "name": "Joaquin Phoenix",
+      "birthYear": null,
+      "id": 7
+    },
+    {
+      "name": "Robert Downey Junior",
+      "birthYear": null,
+      "id": 8
+    },
+    {
+      "name": "Chris Evans",
+      "birthYear": null,
+      "id": 9
+    },
+    {
+      "name": "Tom Holland",
+      "birthYear": null,
+      "id": 10
+    },
+    {
+      "name": "Benedict Cumberbetch",
+      "birthYear": null,
+      "id": 11
+    },
+    {
+      "name": "Mark Ruffallo",
+      "birthYear": null,
+      "id": 12
+    },
+    {
+      "name": "Robert Downey Junior",
+      "birthYear": null,
+      "id": 13
+    },
+    {
+      "name": "Chris Evans",
+      "birthYear": null,
+      "id": 14
+    },
+    {
+      "name": "Mark Ruffallo",
+      "birthYear": null,
+      "id": 15
+    },
+    {
+      "name": "Tom Holland",
+      "birthYear": null,
+      "id": 16
+    },
+    {
+      "name": "ыва",
+      "birthYear": 234,
+      "id": 17
+    }
+  ],
+  "movie_actors": [
+    {
+      "movieId": 1,
+      "actorId": 1,
+      "id": 1
+    },
+    {
+      "movieId": 9,
+      "actorId": 1,
+      "id": 2
+    },
+    {
+      "movieId": 2,
+      "actorId": 6,
+      "id": 3
+    },
+    {
+      "movieId": 2,
+      "actorId": 7,
+      "id": 4
+    },
+    {
+      "movieId": 3,
+      "actorId": 8,
+      "id": 5
+    },
+    {
+      "movieId": 3,
+      "actorId": 9,
+      "id": 6
+    },
+    {
+      "movieId": 3,
+      "actorId": 10,
+      "id": 7
+    },
+    {
+      "movieId": 3,
+      "actorId": 11,
+      "id": 8
+    },
+    {
+      "movieId": 3,
+      "actorId": 12,
+      "id": 9
+    },
+    {
+      "movieId": 4,
+      "actorId": 13,
+      "id": 10
+    },
+    {
+      "movieId": 4,
+      "actorId": 14,
+      "id": 11
+    },
+    {
+      "movieId": 4,
+      "actorId": 15,
+      "id": 12
+    },
+    {
+      "movieId": 8,
+      "actorId": 16,
+      "id": 13
+    },
+    {
+      "movieId": 5,
+      "actorId": 17,
+      "id": 14
     }
   ]
 }

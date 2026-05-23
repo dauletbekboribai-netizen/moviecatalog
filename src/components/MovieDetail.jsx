@@ -1,30 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Toast from "./Toast";
+import ConfirmModal from "./ConfirmModal";
 
-const showToast = (message, type = "success") => {
-  const toast = document.createElement("div");
-
-  toast.innerText = message;
-
-  toast.style.position = "fixed";
-  toast.style.bottom = "20px";
-  toast.style.left = "20px";
-  toast.style.padding = "12px 16px";
-  toast.style.borderRadius = "8px";
-  toast.style.color = "#fff";
-  toast.style.zIndex = "9999";
-  toast.style.fontWeight = "500";
-  toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
-  toast.style.background =
-    type === "error" ? "#dc2626" : "#16a34a";
-
-  document.body.appendChild(toast);
-
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-};
+const BASE_URL = "http://localhost:3001";
+const getToken = () => localStorage.getItem("token");
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -34,22 +15,61 @@ export default function MovieDetail() {
   const [rating, setRating] = useState(5);
   const [averageRating, setAverageRating] = useState(0);
   const [genre, setGenre] = useState(null);
-  const [editingReviewId, setEditingReviewId] = useState(null);
-  const [editComment, setEditComment] = useState("");
-  const [editRating, setEditRating] = useState(5);
+  const [actors, setActors] = useState([]);
+  const [showActorModal, setShowActorModal] = useState(false);
+  const [newActorName, setNewActorName] = useState("");
+  const [newActorBirthYear, setNewActorBirthYear] = useState("");
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: "", message: "", onConfirm: null });
   const user = useSelector(state => state.auth.user);
   const navigate = useNavigate();
-  const [deleteReviewData, setDeleteReviewData] = useState(null);
-  const [isDeleteMovieModalOpen, setIsDeleteMovieModalOpen] = useState(false);
 
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
 
-  const getToken = () => localStorage.getItem("token");
+  const showConfirm = (title, message, onConfirm) => {
+    setConfirmModal({ isOpen: true, title, message, onConfirm: () => {
+      onConfirm();
+      setConfirmModal({ isOpen: false, title: "", message: "", onConfirm: null });
+    }});
+  };
 
-  const updateAverage = (list) => {
-    if (list.length > 0) {
-      const sum = list.reduce((acc, r) => acc + r.rating, 0);
-      setAverageRating((sum / list.length).toFixed(1));
-    } else setAverageRating(0);
+  const loadMovie = async () => {
+    const res = await fetch(`${BASE_URL}/movies/${id}`);
+    const data = await res.json();
+    setMovie(data);
+    
+    if (data.genreId) {
+      const genreRes = await fetch(`${BASE_URL}/genres/${data.genreId}`);
+      setGenre(await genreRes.json());
+    }
+    
+    await loadActors();
+  };
+
+  const loadActors = async () => {
+    const actorsRes = await fetch(`${BASE_URL}/movie_actors?movieId=${id}`);
+    const movieActors = await actorsRes.json();
+    const actorList = await Promise.all(
+      movieActors.map(async (ma) => {
+        const actorRes = await fetch(`${BASE_URL}/actors/${ma.actorId}`);
+        return actorRes.json();
+      })
+    );
+    setActors(actorList);
+  };
+
+  const loadReviews = async () => {
+    const res = await fetch(`${BASE_URL}/reviews?movieId=${id}`);
+    const data = await res.json();
+    setReviews(data);
+    if (data.length > 0) {
+      const sum = data.reduce((acc, r) => acc + r.rating, 0);
+      setAverageRating((sum / data.length).toFixed(1));
+    } else {
+      setAverageRating(0);
+    }
   };
 
   useEffect(() => {
@@ -57,376 +77,275 @@ export default function MovieDetail() {
     loadReviews();
   }, [id]);
 
-  const loadMovie = async () => {
-    const res = await fetch(`http://localhost:3001/movies/${id}`);
-    const data = await res.json();
-    setMovie(data);
-    if (data.genreId) {
-      const genreRes = await fetch(`http://localhost:3001/genres/${data.genreId}`);
-      setGenre(await genreRes.json());
-    }
-  };
-
-  const loadReviews = async () => {
-    const res = await fetch(`http://localhost:3001/reviews?movieId=${id}`);
-    const data = await res.json();
-    setReviews(data);
-    updateAverage(data);
-  };
-
   const handleAddReview = async () => {
     if (!comment.trim()) {
-        showToast("Write a comment", "error");
-        return;
+      showToast("Write a comment", "warning");
+      return;
     }
     if (!user) {
-        showToast("Login first", "error");
-        return;
-    }
-
-    const token = getToken();
-    const newReview = {
-      movieId: parseInt(id),
-      userId: user.id,
-      userName: user.name,
-      comment,
-      rating,
-      createdAt: new Date().toISOString()
-    };
-
-    const res = await fetch("http://localhost:3001/reviews", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify(newReview)
-    });
-
-    if (res.ok) {
-      const saved = await res.json();
-      const updated = [...reviews, saved];
-      setReviews(updated);
-      setComment("");
-      setRating(5);
-      updateAverage(updated);
-      showToast("Review added successfully");
-    } else {
-      showToast("Error adding review", "error");
-    }
-  };
-
-  const startEditReview = (r) => {
-    setEditingReviewId(r.id);
-    setEditComment(r.comment);
-    setEditRating(r.rating);
-  };
-
-  const cancelEditReview = () => {
-    setEditingReviewId(null);
-    setEditComment("");
-    setEditRating(5);
-  };
-
-  const handleUpdateReview = async (reviewId, reviewUserId) => {
-    if (!user) return;
-    if (user.role !== "admin" && user.id !== reviewUserId) {
-      showToast("You can only edit your own reviews", "error");
-      return;
-    }
-    if (!editComment.trim()) {
-      showToast("Write a comment", "error");
+      showToast("Please login first", "warning");
       return;
     }
 
-    const reviewToUpdate = reviews.find(r => r.id === reviewId);
-    if (!reviewToUpdate) return;
-
-    const res = await fetch(`http://localhost:3001/reviews/${reviewId}`, {
-      method: "PUT",
+    const res = await fetch(`${BASE_URL}/reviews`, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${getToken()}`
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
       },
       body: JSON.stringify({
-        ...reviewToUpdate,
-        comment: editComment,
-        rating: parseInt(editRating)
+        movieId: parseInt(id),
+        userId: user.id,
+        userName: user.name,
+        comment,
+        rating,
+        createdAt: new Date().toISOString()
       })
     });
 
     if (res.ok) {
-      const saved = await res.json();
-      const updated = reviews.map(r => r.id === reviewId ? saved : r);
-      setReviews(updated);
-      updateAverage(updated);
-      cancelEditReview();
-      showToast("Review updated successfully");
+      await loadReviews();
+      setComment("");
+      setRating(5);
+      showToast("Review added!", "success");
     } else {
-      showToast("Error updating review", "error");
+      showToast("Failed to add review", "error");
     }
   };
 
   const handleDeleteReview = async (reviewId, reviewUserId) => {
-    if (!user) return;
     if (user.role !== "admin" && user.id !== reviewUserId) {
-      alert("You can only delete your own reviews");
+      showToast("You can only delete your own reviews", "warning");
+      return;
+    }
+    
+    showConfirm("Delete Review", "Are you sure you want to delete this review?", async () => {
+      await fetch(`${BASE_URL}/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      await loadReviews();
+      showToast("Review deleted", "success");
+    });
+  };
+
+  const handleCreateAndAddActor = async () => {
+    if (!newActorName.trim()) {
+      showToast("Enter actor name", "warning");
       return;
     }
 
     const token = getToken();
-    await fetch(`http://localhost:3001/reviews/${reviewId}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
+    
+    const actorRes = await fetch(`${BASE_URL}/actors`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name: newActorName,
+        birthYear: newActorBirthYear ? parseInt(newActorBirthYear) : null
+      })
     });
 
-    const updated = reviews.filter(r => r.id !== reviewId);
-    setReviews(updated);
-    updateAverage(updated);
-    showToast("Review deleted successfully");
-    setDeleteReviewData(null);
-    if (editingReviewId === reviewId) cancelEditReview();
+    if (actorRes.ok) {
+      const newActor = await actorRes.json();
+      
+      const relationRes = await fetch(`${BASE_URL}/movie_actors`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          movieId: parseInt(id),
+          actorId: newActor.id
+        })
+      });
+
+      if (relationRes.ok) {
+        await loadActors();
+        setShowActorModal(false);
+        setNewActorName("");
+        setNewActorBirthYear("");
+        showToast("Actor created and added!", "success");
+      } else {
+        showToast("Failed to add actor to movie", "error");
+      }
+    } else {
+      showToast("Failed to create actor", "error");
+    }
   };
 
-  const canDeleteMovie = () => {
-    if (!user) return false;
-    if (user.role === "admin") return true;
-    return movie?.createdBy === user.id;
+  const handleRemoveActor = async (actorId) => {
+    showConfirm("Remove Actor", "Are you sure you want to remove this actor?", async () => {
+      const res = await fetch(`${BASE_URL}/movie_actors?movieId=${parseInt(id)}&actorId=${actorId}`);
+      const relations = await res.json();
+      if (relations.length > 0) {
+        await fetch(`${BASE_URL}/movie_actors/${relations[0].id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        await loadActors();
+        showToast("Actor removed", "success");
+      }
+    });
   };
 
   const handleDeleteMovie = async () => {
-    const token = getToken();
-    for (const review of reviews) {
-      await fetch(`http://localhost:3001/reviews/${review.id}`, {
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
+    showConfirm("Delete Movie", "Are you sure you want to delete this movie? All reviews will be deleted too.", async () => {
+      for (const review of reviews) {
+        await fetch(`${BASE_URL}/reviews/${review.id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+      }
+      
+      await fetch(`${BASE_URL}/movies/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getToken()}` }
       });
-    }
-    await fetch(`http://localhost:3001/movies/${id}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
+      navigate('/');
+      showToast("Movie deleted", "success");
     });
-    showToast("Movie deleted successfully");
-    setIsDeleteMovieModalOpen(false);
-    navigate("/");
+  };
+
+  const canEdit = () => {
+    if (!user) return false;
+    if (user.role === 'admin') return true;
+    return movie?.createdBy === user.id;
   };
 
   if (!movie) return <div className="loading">Loading...</div>;
 
-return (
-  <div className="movie-detail">
-    <button onClick={() => navigate(-1)} className="btn btn-secondary">← Back</button>
-
-    <div className="movie-detail-container">
-      <img
-        src={movie.posterUrl || "https://via.placeholder.com/400x600?text=No+Poster"}
-        alt={movie.title}
-        className="movie-detail-poster"
-      />
-      <div className="movie-detail-info">
-        <h1>{movie.title}</h1>
-        <p>📅 Year: {movie.year}</p>
-        <p>🎭 Genre: {genre?.name || "Unknown"}</p>
-        <div className="average-rating">
-          ⭐ Average Rating: <strong>{averageRating}</strong>/10 ({reviews.length} {reviews.length === 1 ? "review" : "reviews"})
-        </div>
-        <p>{movie.description || "No description"}</p>
-
-        {canDeleteMovie() && (
-          <div className="movie-actions">
-            <button onClick={() => navigate(`/movies/edit/${movie.id}`)} className="btn btn-warning">
-              Edit
-            </button>
-            <button onClick={() => setIsDeleteMovieModalOpen(true)} className="btn btn-danger">
-              Delete
-            </button>
+  return (
+    <div className="movie-detail">
+      <button onClick={() => navigate(-1)} className="btn btn-secondary">← Back</button>
+      
+      <div className="movie-detail-container">
+        <img src={movie.posterUrl || "https://via.placeholder.com/400x600?text=No+Poster"} alt={movie.title} className="movie-detail-poster" />
+        <div className="movie-detail-info">
+          <h1>{movie.title}</h1>
+          <p>📅 Year: {movie.year}</p>
+          <p>🎭 Genre: {genre?.name || "Unknown"}</p>
+          
+          <div className="actors-section">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+              <strong>🎭 Cast ({actors.length}):</strong>
+              {canEdit() && (
+                <button onClick={() => setShowActorModal(true)} className="btn btn-primary btn-sm">+ Add Actor</button>
+              )}
+            </div>
+            <div className="actors-list">
+              {actors.map(actor => (
+                <span key={actor.id} className="actor-tag">
+                  {actor.name} ({actor.birthYear || "?"})
+                  {canEdit() && (
+                    <button onClick={() => handleRemoveActor(actor.id)}>×</button>
+                  )}
+                </span>
+              ))}
+              {actors.length === 0 && <span>No actors yet</span>}
+            </div>
           </div>
-        )}
+
+          <div className="average-rating">
+            ⭐ Average Rating: <strong>{averageRating}</strong>/10 ({reviews.length} {reviews.length === 1 ? "review" : "reviews"})
+          </div>
+          <p>{movie.description || "No description"}</p>
+          
+          {canEdit() && (
+            <div className="movie-actions">
+              <button onClick={() => navigate(`/movies/edit/${movie.id}`)} className="btn btn-warning">Edit</button>
+              <button onClick={handleDeleteMovie} className="btn btn-danger">Delete</button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
 
-    <div className="reviews-section">
-      <h3>💬 Reviews ({reviews.length})</h3>
-
-      {user ? (
-        <div className="review-form">
-          <input
-            type="number"
-            min="1"
-            max="10"
-            value={rating}
-            onChange={e => setRating(parseInt(e.target.value))}
-            className="form-control"
-            style={{ width: "100px", marginBottom: "10px" }}
-          />
-          <textarea
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-            placeholder="Your review..."
-            className="form-control"
-            rows="2"
-          />
-          <button onClick={handleAddReview} className="btn btn-primary" style={{ marginTop: "10px" }}>
-            Submit
-          </button>
-        </div>
-      ) : (
-        <div className="login-prompt">
-          Please <Link to="/login">login</Link> to review
-        </div>
-      )}
-
-      {reviews.length === 0 ? (
-        <p className="no-reviews">No reviews yet</p>
-      ) : (
-        reviews.map(r => (
+      <div className="reviews-section">
+        <h3>💬 Reviews ({reviews.length})</h3>
+        {user ? (
+          <div className="review-form">
+            <input type="number" min="1" max="10" value={rating} onChange={e => setRating(parseInt(e.target.value))} className="form-control" style={{ width: "100px" }} />
+            <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Your review..." className="form-control" rows="2" />
+            <button onClick={handleAddReview} className="btn btn-primary">Submit</button>
+          </div>
+        ) : (
+          <div className="login-prompt">Please <Link to="/login">login</Link> to review</div>
+        )}
+        {reviews.map(r => (
           <div key={r.id} className="review-card">
             <div className="review-header">
-              <strong>{r.userName}</strong> <span className="review-rating">⭐ {r.rating}/10</span>
+              <strong>{r.userName}</strong> <span>⭐ {r.rating}/10</span>
               <small>{new Date(r.createdAt).toLocaleDateString()}</small>
             </div>
-
-            {editingReviewId === r.id ? (
-              <>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={editRating}
-                  onChange={e => setEditRating(parseInt(e.target.value))}
-                  className="form-control"
-                  style={{ width: "100px", marginBottom: "10px" }}
-                />
-                <textarea
-                  value={editComment}
-                  onChange={e => setEditComment(e.target.value)}
-                  className="form-control"
-                  rows="2"
-                />
-                <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                  <button onClick={() => handleUpdateReview(r.id, r.userId)} className="btn btn-warning btn-sm">
-                    Save
-                  </button>
-                  <button onClick={cancelEditReview} className="btn btn-secondary btn-sm">
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p>{r.comment}</p>
-                {(user?.role === "admin" || user?.id === r.userId) && (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <button onClick={() => startEditReview(r)} className="btn btn-warning btn-sm">
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => setDeleteReviewData({ id: r.id, userId: r.userId })}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </>
+            <p>{r.comment}</p>
+            {(user?.role === "admin" || user?.id === r.userId) && (
+              <button onClick={() => handleDeleteReview(r.id, r.userId)} className="btn btn-danger btn-sm">Delete</button>
             )}
           </div>
-        ))
+        ))}
+      </div>
+
+      {showActorModal && (
+        <div className="modal-overlay" onClick={() => setShowActorModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3 style={{ marginBottom: "15px" }}>Add Actor to "{movie.title}"</h3>
+            
+            <div className="form-group">
+              <label>Actor Name *</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g., Brad Pitt"
+                value={newActorName}
+                onChange={e => setNewActorName(e.target.value)}
+                style={{ marginBottom: "10px" }}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Birth Year (optional)</label>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="e.g., 1963"
+                value={newActorBirthYear}
+                onChange={e => setNewActorBirthYear(e.target.value)}
+                style={{ marginBottom: "15px" }}
+              />
+            </div>
+            
+            <button 
+              onClick={handleCreateAndAddActor} 
+              className="btn btn-primary" 
+              style={{ width: "100%", marginBottom: "10px" }}
+            >
+              Create & Add Actor
+            </button>
+            
+            <button 
+              onClick={() => setShowActorModal(false)} 
+              className="btn btn-secondary" 
+              style={{ width: "100%" }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ isOpen: false, title: "", message: "", onConfirm: null })}
+      />
     </div>
-
-    {isDeleteMovieModalOpen && (
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.55)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 9999,
-          padding: "20px"
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-            background: "#1f1f1f",
-            color: "#fff",
-            borderRadius: "18px",
-            padding: "24px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.35)"
-          }}
-        >
-          <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Delete movie</h3>
-          <p style={{ marginBottom: "20px", color: "#d1d5db", lineHeight: "1.5" }}>
-            Are you sure you want to delete this movie?
-            <br />
-            All reviews will be deleted too.
-          </p>
-
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-            <button
-              onClick={() => setIsDeleteMovieModalOpen(false)}
-              className="btn btn-secondary"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDeleteMovie}
-              className="btn btn-danger"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {deleteReviewData !== null && (
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.55)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 9999,
-          padding: "20px"
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-            background: "#1f1f1f",
-            color: "#fff",
-            borderRadius: "18px",
-            padding: "24px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.35)"
-          }}
-        >
-          <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Delete review</h3>
-          <p style={{ color: "#d1d5db", marginBottom: "20px", lineHeight: "1.5" }}>
-            Are you sure you want to delete this review?
-          </p>
-
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-            <button
-              onClick={() => setDeleteReviewData(null)}
-              className="btn btn-secondary"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => handleDeleteReview(deleteReviewData.id, deleteReviewData.userId)}
-              className="btn btn-danger"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-  </div>
-);
+  );
 }

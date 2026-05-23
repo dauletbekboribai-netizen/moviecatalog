@@ -1,54 +1,43 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { addMovie, updateMovie } from '../redux/store';
+import Toast from "./Toast";
 
-const showToast = (message, type = "success") => {
-  const toast = document.createElement("div");
-
-  toast.innerText = message;
-
-  toast.style.position = "fixed";
-  toast.style.bottom = "20px";
-  toast.style.left = "20px";
-  toast.style.padding = "12px 16px";
-  toast.style.borderRadius = "8px";
-  toast.style.color = "#fff";
-  toast.style.zIndex = "9999";
-  toast.style.fontWeight = "500";
-  toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
-  toast.style.background =
-    type === "error" ? "#dc2626" : "#16a34a";
-
-  document.body.appendChild(toast);
-
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-};
-
-export default function MovieForm() {
+export default function MovieForm({ onMovieCreated, onMovieUpdated }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
   const [genres, setGenres] = useState([]);
   const [form, setForm] = useState({ title: "", year: new Date().getFullYear(), posterUrl: "", description: "", genreId: "" });
   const [error, setError] = useState("");
+  const [toast, setToast] = useState(null);
 
   const getToken = () => localStorage.getItem("token");
 
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
+
   useEffect(() => {
     fetch('http://localhost:3001/genres').then(res => res.json()).then(setGenres);
-    if (id) fetch(`http://localhost:3001/movies/${id}`).then(res => res.json()).then(setForm);
+    if (id) {
+      fetch(`http://localhost:3001/movies/${id}`).then(res => res.json()).then(setForm);
+    }
   }, [id]);
 
   const handleSubmit = async () => {
-    if (!form.title || !form.year || !form.genreId) return setError("Fill all fields");
+    if (!form.title || !form.year || !form.genreId) {
+      setError("Fill all fields");
+      showToast("Fill all fields", "warning");
+      return;
+    }
     
     const token = getToken();
     if (!token) {
-      const message = "Please login first";
-       setError(message);
-       showToast(message, "error");
+      setError("Please login first");
+      showToast("Please login first", "warning");
       return;
     }
 
@@ -65,12 +54,25 @@ export default function MovieForm() {
       }, 
       body: JSON.stringify(dataToSend) 
     });
-    showToast(id ? "Movie updated successfully" : "Movie added successfully");
-    if (res.ok) navigate('/');
     
-    else {
+    if (res.ok) {
+      const savedMovie = await res.json();
+      
+      if (id) {
+        dispatch(updateMovie(savedMovie));
+        if (onMovieUpdated) onMovieUpdated();
+        showToast("Movie updated!", "success");
+      } else {
+        dispatch(addMovie(savedMovie));
+        if (onMovieCreated) onMovieCreated();
+        showToast("Movie created!", "success");
+      }
+      
+      setTimeout(() => navigate('/'), 1000);
+    } else {
       const data = await res.json();
       setError(data.error || "Error saving movie");
+      showToast(data.error || "Error saving movie", "error");
     }
   };
 
@@ -88,6 +90,8 @@ export default function MovieForm() {
       <textarea placeholder="Description" className="form-control" rows="3" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
       <button onClick={handleSubmit} className="btn btn-primary">{id ? "Update" : "Create"}</button>
       <button onClick={() => navigate('/')} className="btn btn-secondary">Cancel</button>
+      
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }
