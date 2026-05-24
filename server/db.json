@@ -240,8 +240,8 @@
       "movieId": 4,
       "userId": 1775795514604,
       "userName": "Admin Yernur",
-      "comment": "ываы в ываыва",
-      "rating": 5,
+      "comment": "cool",
+      "rating": 7,
       "createdAt": "2026-04-24T05:29:47.314Z",
       "id": 10
     },
@@ -249,19 +249,66 @@
       "movieId": 4,
       "userId": 1775795514604,
       "userName": "Admin Yernur",
-      "comment": " ываыва вапвпва",
-      "rating": 5,
+      "comment": " ываывйцуйва вапвпва",
+      "rating": 6,
       "createdAt": "2026-04-24T05:30:04.565Z",
       "id": 11
+    }
+  ],
+  "actors": [
+    {
+      "name": "Elizabeth Olsen",
+      "birthYear": null,
+      "id": 3
     },
     {
-      "movieId": 4,
-      "userId": 1775795514604,
-      "userName": "Admin Yernur",
-      "comment": "фывфыв",
-      "rating": 3,
-      "createdAt": "2026-04-24T05:30:48.828Z",
-      "id": 12
+      "name": "Brad Pitt",
+      "birthYear": 1999,
+      "id": 5,
+      "gender": "Male",
+      "biography": "QWE"
+    },
+    {
+      "name": "Omar Sy",
+      "birthYear": null,
+      "id": 6
+    },
+    {
+      "name": "Robert De Niro",
+      "birthYear": null,
+      "id": 7
+    },
+    {
+      "name": "Vera Farmiga",
+      "birthYear": null,
+      "id": 8
+    }
+  ],
+  "movie_actors": [
+    {
+      "movieId": 9,
+      "actorId": 3,
+      "id": 4
+    },
+    {
+      "movieId": 3,
+      "actorId": 5,
+      "id": 6
+    },
+    {
+      "movieId": 6,
+      "actorId": 6,
+      "id": 7
+    },
+    {
+      "movieId": 5,
+      "actorId": 7,
+      "id": 8
+    },
+    {
+      "movieId": 7,
+      "actorId": 8,
+      "id": 9
     }
   ]
 }

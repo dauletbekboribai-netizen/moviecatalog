@@ -107,12 +107,48 @@ export const updateMovie = (id, data) => {
   }).then(res => res.json());
 };
 
-export const deleteMovie = (id) => {
-  return fetch(`${BASE_URL}/movies/${id}`, {
-    method: "DELETE",
-    headers: headers()
-  });
-};
+export const deleteMovie = async(movieId)=>{
+ const token=getToken()
+ const relations=
+  await fetch(
+   `${BASE_URL}/movie_actors?movieId=${movieId}`
+  ).then(r=>r.json())
+ for(const relation of relations){
+  await fetch(
+   `${BASE_URL}/movie_actors/${relation.id}`,
+   {
+    method:"DELETE",
+    headers:{
+     Authorization:`Bearer ${token}`
+    }
+   }
+  )
+  const actorRelations=
+   await fetch(
+    `${BASE_URL}/movie_actors?actorId=${relation.actorId}`
+   ).then(r=>r.json())
+  if(actorRelations.length===0){
+   await fetch(
+    `${BASE_URL}/actors/${relation.actorId}`,
+    {
+     method:"DELETE",
+     headers:{
+      Authorization:`Bearer ${token}`
+     }
+    }
+   )
+  }
+ }
+ await fetch(
+  `${BASE_URL}/movies/${movieId}`,
+  {
+   method:"DELETE",
+   headers:{
+    Authorization:`Bearer ${token}`
+   }
+  }
+ )
+}
 
 export const getReviews = (movieId) => {
   return fetch(`${BASE_URL}/reviews?movieId=${movieId}`).then(res => res.json());
